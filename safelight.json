@@ -1,0 +1,21 @@
+{
+  "id": "safelight.develop",
+  "name": "Develop",
+  "version": "1.0.0",
+  "description": "Edit the open photo on the canvas, with zoom, soft proof and color assessment.",
+  "author": "Anthony Reimche",
+  "main": "dist/index.js",
+  "license": "GPL-3.0-only",
+  "categories": [
+    "workflow"
+  ],
+  "keywords": [
+    "develop",
+    "edit",
+    "canvas",
+    "zoom",
+    "proof"
+  ],
+  "repository": "anthonyreimche/Develop",
+  "minAppVersion": "3.2.0"
+}
