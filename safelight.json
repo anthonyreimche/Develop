@@ -2,7 +2,7 @@
   "id": "safelight.develop",
   "name": "Develop",
   "version": "1.0.0",
-  "description": "Edit the open photo on the canvas, with zoom, soft proof and color assessment.",
+  "description": "Edit the open photo on the canvas, with zoom, soft proof and colour assessment.",
   "author": "Anthony Reimche",
   "main": "dist/index.js",
   "license": "GPL-3.0-only",
