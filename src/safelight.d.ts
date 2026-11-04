@@ -11,7 +11,7 @@
 
 import type { ComponentType, ReactNode } from "react";
 
-/** A catalog photo, with the fields this extension reads. */
+/** A catalogue photo, with the fields this extension reads. */
 export interface CatalogPhoto {
   id: string;
   filename: string;
