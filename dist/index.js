@@ -31,38 +31,46 @@ function u(e) {
 :where(.${l}-empty-hint) { font-size: 0.75rem; line-height: 1rem; }
 :where(.${l}-status) { display: flex; width: 100%; align-items: center; justify-content: space-between; }
 :where(.${l}-controls) { display: flex; align-items: center; gap: 12px; }
+:where(.${l}-photo) { display: flex; min-width: 0; align-items: center; gap: 12px; }
+:where(.${l}-name) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 `;
 }
 function d() {
 	let n = c();
-	return e.useEffect(() => () => o(null), []), /* @__PURE__ */ e.createElement(t.components.DevelopCanvas, {
+	return e.useEffect(() => () => o(null), []), /* @__PURE__ */ e.createElement(e.Fragment, null, t.components.PhotoMetadataControl && /* @__PURE__ */ e.createElement(f, null), /* @__PURE__ */ e.createElement(t.components.DevelopCanvas, {
 		zoom: n,
 		onZoomChange: o,
 		empty: /* @__PURE__ */ e.createElement("div", { className: `${l}-empty` }, /* @__PURE__ */ e.createElement("p", { className: `${l}-empty-title` }, "No photo selected"), /* @__PURE__ */ e.createElement("p", { className: `${l}-empty-hint` }, "Select a photo in Library to begin editing"))
-	});
+	}));
 }
 function f() {
-	let n = t.catalog.useActivePhoto(), r = c(), { Slot: i, AssessmentToggle: a, ProofToggle: s, ProcessingUpdateControl: u, DisplayTransformControl: d, SurroundControl: f, ZoomControls: p } = t.components;
-	return n ? /* @__PURE__ */ e.createElement("div", { className: `${l}-status` }, /* @__PURE__ */ e.createElement("span", null, t.catalog.photoDisplayName(n)), /* @__PURE__ */ e.createElement("div", { className: `${l}-controls` }, /* @__PURE__ */ e.createElement(i, { name: "develop-toolbar" }), /* @__PURE__ */ e.createElement(a, null), /* @__PURE__ */ e.createElement(s, null), /* @__PURE__ */ e.createElement(u, null), /* @__PURE__ */ e.createElement(d, null), /* @__PURE__ */ e.createElement(f, null), /* @__PURE__ */ e.createElement(p, {
+	return t.catalog.useCullingShortcuts({
+		sizeSteps: !1,
+		rowSteps: !1
+	}), t.catalog.usePhotoActions().overlays;
+}
+function p() {
+	let n = t.catalog.useActivePhoto(), r = c(), { Slot: i, AssessmentToggle: a, ProofToggle: s, ProcessingUpdateControl: u, DisplayTransformControl: d, SurroundControl: f, ZoomControls: p, PhotoMetadataControl: m } = t.components;
+	return n ? /* @__PURE__ */ e.createElement("div", { className: `${l}-status` }, /* @__PURE__ */ e.createElement("div", { className: `${l}-photo` }, /* @__PURE__ */ e.createElement("span", { className: `${l}-name` }, t.catalog.photoDisplayName(n)), m && /* @__PURE__ */ e.createElement(m, null)), /* @__PURE__ */ e.createElement("div", { className: `${l}-controls` }, /* @__PURE__ */ e.createElement(i, { name: "develop-toolbar" }), /* @__PURE__ */ e.createElement(a, null), /* @__PURE__ */ e.createElement(s, null), /* @__PURE__ */ e.createElement(u, null), /* @__PURE__ */ e.createElement(d, null), /* @__PURE__ */ e.createElement(f, null), /* @__PURE__ */ e.createElement(p, {
 		zoom: r,
 		onChange: o
 	}))) : null;
 }
 //#endregion
 //#region src/index.tsx
-var p = "develop", m = "safelight.develop.styles";
-function h(e) {
+var m = "develop", h = "safelight.develop.styles";
+function g(e) {
 	n(e), e.registerStylesheet({
-		id: m,
+		id: h,
 		css: u(e.ui.tokens)
 	}), e.registerModule({
-		id: p,
+		id: m,
 		label: "Develop",
 		component: d,
-		statusBar: f
+		statusBar: p
 	});
 }
 //#endregion
-export { p as MODULE_ID, m as STYLESHEET_ID, h as activate };
+export { m as MODULE_ID, h as STYLESHEET_ID, g as activate };
 
 //# sourceMappingURL=index.js.map

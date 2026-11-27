@@ -7,6 +7,7 @@ import * as React from "react";
 import { create } from "zustand";
 import type {
   CatalogPhoto,
+  CullingShortcutOptions,
   DevelopCanvasProps,
   ModuleContribution,
   SafelightAPI,
@@ -19,6 +20,8 @@ export interface Rig {
   setActivePhoto(photo: CatalogPhoto | undefined): void;
   modules: ModuleContribution[];
   stylesheets: StylesheetContribution[];
+  /** The options of each culling-shortcut mount still mounted. */
+  culling: CullingShortcutOptions[];
 }
 
 export function photo(id: string, extra: Partial<CatalogPhoto> & { copyName?: string } = {}): CatalogPhoto {
@@ -36,9 +39,12 @@ function ZoomControls({ zoom, onChange }: ZoomControlsProps) {
   );
 }
 
-export function fakeApi(): Rig {
+/** `photoMetadata: false` stands for a Safelight before 3.2.8, without
+ *  PhotoMetadataControl. */
+export function fakeApi({ photoMetadata = true }: { photoMetadata?: boolean } = {}): Rig {
   const modules: ModuleContribution[] = [];
   const stylesheets: StylesheetContribution[] = [];
+  const culling: CullingShortcutOptions[] = [];
   const active = create<{ photo: CatalogPhoto | undefined }>()(() => ({ photo: undefined }));
 
   function DevelopCanvas({ zoom, onZoomChange, empty }: DevelopCanvasProps) {
@@ -65,10 +71,20 @@ export function fakeApi(): Rig {
       ProcessingUpdateControl: marker("processing-update"),
       ProofToggle: marker("proof"),
       AssessmentToggle: marker("assess"),
+      ...(photoMetadata ? { PhotoMetadataControl: marker("photo-metadata") } : {}),
       Slot: ({ name }) => <span data-control={`slot:${name}`} />,
     },
     catalog: {
       useActivePhoto: () => active((s) => s.photo),
+      usePhotoActions: () => ({ onContextMenu: () => {}, overlays: <span data-control="photo-actions" /> }),
+      useCullingShortcuts: (options = {}) => {
+        const { sizeSteps, rowSteps } = options;
+        React.useEffect(() => {
+          const mount = { sizeSteps, rowSteps };
+          culling.push(mount);
+          return () => void culling.splice(culling.indexOf(mount), 1);
+        }, [sizeSteps, rowSteps]);
+      },
       photoDisplayName: (p) => {
         const copy = (p as CatalogPhoto & { copyName?: string }).copyName;
         if (!copy) return p.filename;
@@ -83,5 +99,6 @@ export function fakeApi(): Rig {
     setActivePhoto: (p) => active.setState({ photo: p }),
     modules,
     stylesheets,
+    culling,
   };
 }

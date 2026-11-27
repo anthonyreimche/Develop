@@ -1,7 +1,7 @@
 {
   "name": "safelight-develop",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Develop module for Safelight: the editing canvas and its status bar.",
   "type": "module",
   "scripts": {

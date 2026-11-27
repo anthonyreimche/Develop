@@ -9,12 +9,20 @@
 // src/catalog/types.ts. Extensions are standalone bundles, so the host's source
 // is not on the type path; React types come from @types/react (dev only).
 
-import type { ComponentType, ReactNode } from "react";
+import type { ComponentType, MouseEvent, ReactNode } from "react";
 
 /** A catalogue photo, with the fields this extension reads. */
 export interface CatalogPhoto {
   id: string;
   filename: string;
+}
+
+export interface CullingShortcutOptions {
+  /** Handle - / =, which step the Library grid's thumbnail size. Default true. */
+  sizeSteps?: boolean;
+  /** Handle ↑/↓, which step a Library grid row. Default true; Safelight 3.2.8
+   *  and later, where older versions always step rows. */
+  rowSteps?: boolean;
 }
 
 export interface DevelopCanvasProps {
@@ -67,6 +75,9 @@ export interface SafelightAPI {
     ProcessingUpdateControl: ComponentType;
     ProofToggle: ComponentType;
     AssessmentToggle: ComponentType;
+    /** The open photo's flag, rating, colour label and keyword count, then the
+     *  "develop-photo-metadata" slot. Safelight 3.2.8 and later. */
+    PhotoMetadataControl?: ComponentType;
     /** Every component registered into the named core slot. */
     Slot: ComponentType<{ name: string }>;
   };
@@ -75,6 +86,12 @@ export interface SafelightAPI {
     useActivePhoto(): CatalogPhoto | undefined;
     /** The name a photo is shown by: its filename, with a virtual copy's name added. */
     photoDisplayName(photo: CatalogPhoto): string;
+    /** Mount the Library's culling keys (ratings, flags, colour labels, rotate,
+     *  remove, prev/next and more) while the calling component is mounted. React hook. */
+    useCullingShortcuts(options?: CullingShortcutOptions): void;
+    /** The Library's photo menu and its dialogues. Its overlays answer the
+     *  rename (F2) and Copy settings keys while mounted. React hook. */
+    usePhotoActions(): { onContextMenu(id: string, e: MouseEvent): void; overlays: ReactNode };
   };
 }
 

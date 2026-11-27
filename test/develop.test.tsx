@@ -15,8 +15,8 @@ afterEach(() => {
   setZoom(null);
 });
 
-function rig(): Rig {
-  const r = fakeApi();
+function rig(opts?: { photoMetadata?: boolean }): Rig {
+  const r = fakeApi(opts);
   activate(r.api);
   return r;
 }
@@ -46,6 +46,27 @@ describe("activate", () => {
 });
 
 describe("DevelopView", () => {
+  it("mounts core's culling keys while shown, without the grid's size and row steps", () => {
+    const r = rig();
+    const view = render(<DevelopView />);
+    expect(r.culling).toEqual([{ sizeSteps: false, rowSteps: false }]);
+    view.unmount();
+    expect(r.culling).toEqual([]);
+  });
+
+  it("hosts the photo dialogues the rename and copy settings keys open", () => {
+    rig();
+    render(<DevelopView />);
+    expect(document.querySelector('[data-control="photo-actions"]')).toBeTruthy();
+  });
+
+  it("leaves the culling keys off before Safelight 3.2.8, whose ↑/↓ would step grid rows", () => {
+    const r = rig({ photoMetadata: false });
+    render(<DevelopView />);
+    expect(r.culling).toEqual([]);
+    expect(document.querySelector('[data-control="photo-actions"]')).toBeNull();
+  });
+
   it("says how to begin while no photo is open", () => {
     rig();
     render(<DevelopView />);
@@ -96,12 +117,13 @@ describe("DevelopStatusBar", () => {
     expect(screen.getByText("a_copy.ARW")).toBeTruthy();
   });
 
-  it("lays out the toolbar slot and the view controls in core's order", () => {
+  it("lays out the photo's metadata, the toolbar slot and the view controls in core's order", () => {
     const r = rig();
     r.setActivePhoto(photo("a"));
     render(<DevelopStatusBar />);
     const order = [...document.querySelectorAll<HTMLElement>("[data-control]")].map((e) => e.dataset.control);
     expect(order).toEqual([
+      "photo-metadata",
       "slot:develop-toolbar",
       "assess",
       "proof",
@@ -110,6 +132,25 @@ describe("DevelopStatusBar", () => {
       "surround",
       "zoom",
     ]);
+  });
+
+  // Discussion #294: the open photo's flag, stars, label and keywords, after its name.
+  it("shows the open photo's metadata after its name", () => {
+    const r = rig();
+    r.setActivePhoto(photo("a"));
+    render(<DevelopStatusBar />);
+    const name = screen.getByText("a.ARW");
+    const metadata = document.querySelector<HTMLElement>('[data-control="photo-metadata"]');
+    expect(metadata).toBeTruthy();
+    expect(name.compareDocumentPosition(metadata!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("leaves the metadata out on a Safelight without it", () => {
+    const r = rig({ photoMetadata: false });
+    r.setActivePhoto(photo("a"));
+    render(<DevelopStatusBar />);
+    expect(screen.getByText("a.ARW")).toBeTruthy();
+    expect(document.querySelector('[data-control="photo-metadata"]')).toBeNull();
   });
 
   it("follows the photo that is open", () => {
